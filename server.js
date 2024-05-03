@@ -25,7 +25,9 @@ app.use(methodOverride("_method"));
 app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
-    res.render('index.ejs')
+  res.render('index.ejs', {
+    user: req.session.user,
+  });
 })
 
 app.use("/auth", authController);
@@ -34,3 +36,14 @@ app.use("/auth", authController);
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
+
+app.use(methodOverride("_method"));
+app.use(morgan('dev'));
+// new
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
