@@ -12,6 +12,14 @@ const session = require('express-session');
 const port = process.env.PORT ? process.env.PORT : "3000";
 const authController = require("./controllers/auth.js");
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on("connected", () => {
@@ -27,7 +35,7 @@ app.use(morgan('dev'));
 
 app.get("/", (req, res) => {
   res.render("index.ejs", {
-    user: req.user
+    user: req.session.user
   });
 });
 
@@ -42,10 +50,4 @@ app.listen(port, () => {
 app.use(methodOverride("_method"));
 app.use(morgan('dev'));
 // new
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+
